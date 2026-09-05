@@ -1,0 +1,242 @@
+[
+  {
+    "op": "create",
+    "as": "location",
+    "module": "locations",
+    "data": {
+      "name": "一号设备检修区",
+      "owner": "现场安全主管",
+      "oxygenMin": 19.5,
+      "oxygenMax": 23.5,
+      "lelMax": 10,
+      "coMax": 25,
+      "h2sMax": 10
+    }
+  },
+  {
+    "op": "create",
+    "as": "isolation",
+    "module": "isolations",
+    "data": {
+      "location": "$location.id",
+      "equipment": "管道阀组 A",
+      "energy": "压力能源",
+      "lockNo": "LOCK-001"
+    }
+  },
+  {
+    "op": "action",
+    "target": "isolation",
+    "action": "lock",
+    "data": {
+      "verification": "泄压完成、盲板和锁具编号核对"
+    },
+    "role": "reviewer"
+  },
+  {
+    "op": "create",
+    "as": "permit",
+    "module": "permits",
+    "data": {
+      "location": "$location.id",
+      "isolation": "$isolation.id",
+      "type": "HOT_WORK",
+      "start": "$today",
+      "end": "$today+1",
+      "team": "设备维修班组",
+      "scope": "支架焊接修复"
+    }
+  },
+  {
+    "op": "action",
+    "target": "permit",
+    "action": "submit",
+    "data": {},
+    "error": 409
+  },
+  {
+    "op": "create",
+    "as": "hazard",
+    "module": "hazards",
+    "data": {
+      "permit": "$permit.id",
+      "hazard": "焊接飞溅引燃周边材料",
+      "control": "移除可燃物并设置监火人员",
+      "responsible": "现场作业负责人"
+    }
+  },
+  {
+    "op": "action",
+    "target": "permit",
+    "action": "submit",
+    "data": {}
+  },
+  {
+    "op": "action",
+    "target": "permit",
+    "action": "approve",
+    "data": {},
+    "role": "reviewer",
+    "error": 409
+  },
+  {
+    "op": "action",
+    "target": "hazard",
+    "action": "verify",
+    "data": {
+      "evidence": "现场检查，监火与灭火器已到位"
+    },
+    "role": "reviewer"
+  },
+  {
+    "op": "action",
+    "target": "permit",
+    "action": "approve",
+    "data": {},
+    "role": "reviewer",
+    "error": 409
+  },
+  {
+    "op": "create",
+    "as": "gasBad",
+    "module": "readings",
+    "data": {
+      "permit": "$permit.id",
+      "testedAt": "$today",
+      "oxygen": 18,
+      "lel": 0,
+      "co": 0,
+      "h2s": 0,
+      "tester": "气体检测员"
+    }
+  },
+  {
+    "op": "action",
+    "target": "permit",
+    "action": "approve",
+    "data": {},
+    "role": "reviewer",
+    "error": 409
+  },
+  {
+    "op": "create",
+    "as": "gasGood",
+    "module": "readings",
+    "data": {
+      "permit": "$permit.id",
+      "testedAt": "$today",
+      "oxygen": 20.9,
+      "lel": 0,
+      "co": 0,
+      "h2s": 0,
+      "tester": "气体检测员"
+    }
+  },
+  {
+    "op": "action",
+    "target": "permit",
+    "action": "approve",
+    "data": {},
+    "role": "reviewer"
+  },
+  {
+    "op": "action",
+    "target": "permit",
+    "action": "start",
+    "data": {}
+  },
+  {
+    "op": "action",
+    "target": "isolation",
+    "action": "release",
+    "data": {
+      "verification": "尝试提前解除"
+    },
+    "role": "reviewer",
+    "error": 409
+  },
+  {
+    "op": "action",
+    "target": "permit",
+    "action": "suspend",
+    "data": {
+      "reason": "现场交接暂停"
+    }
+  },
+  {
+    "op": "check",
+    "target": "permit",
+    "expect": {
+      "state": "SUSPENDED"
+    }
+  },
+  {
+    "op": "action",
+    "target": "permit",
+    "action": "resume",
+    "data": {},
+    "role": "reviewer"
+  },
+  {
+    "op": "action",
+    "target": "permit",
+    "action": "close",
+    "data": {
+      "handover": "工器具清点、焊点复查、现场清洁后交还"
+    },
+    "role": "reviewer"
+  },
+  {
+    "op": "action",
+    "target": "isolation",
+    "action": "release",
+    "data": {
+      "verification": "全部作业完结，经现场确认解除"
+    },
+    "role": "reviewer"
+  },
+  {
+    "op": "check",
+    "target": "permit",
+    "expect": {
+      "state": "CLOSED"
+    }
+  },
+  {
+    "op": "check",
+    "target": "isolation",
+    "expect": {
+      "state": "RELEASED"
+    }
+  },
+  {
+    "op": "create",
+    "as": "cancelledPermit",
+    "module": "permits",
+    "data": {
+      "location": "$location.id",
+      "isolation": "$isolation.id",
+      "type": "MAINTENANCE",
+      "start": "$today",
+      "end": "$today+1",
+      "team": "维修班组",
+      "scope": "取消的检修作业"
+    }
+  },
+  {
+    "op": "action",
+    "target": "cancelledPermit",
+    "action": "cancel",
+    "data": {
+      "reason": "现场计划调整，申请取消"
+    },
+    "role": "reviewer"
+  },
+  {
+    "op": "check",
+    "target": "cancelledPermit",
+    "expect": {
+      "state": "CANCELLED"
+    }
+  }
+]

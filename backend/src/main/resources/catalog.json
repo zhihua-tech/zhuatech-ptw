@@ -1,0 +1,551 @@
+{
+  "slug": "ptw",
+  "pkg": "ptw",
+  "name": "知华作业许可管理",
+  "subtitle": "作业申请、风险控制、气体检测与隔离挂牌",
+  "accent": "#866529",
+  "modules": [
+    {
+      "key": "locations",
+      "label": "作业区域",
+      "description": "工作地点与区域责任人",
+      "initial": "ACTIVE",
+      "editable": true,
+      "creatable": true,
+      "fields": [
+        {
+          "key": "name",
+          "label": "区域名称",
+          "type": "text",
+          "required": true,
+          "ref": null,
+          "options": [],
+          "min": null,
+          "max": null
+        },
+        {
+          "key": "owner",
+          "label": "区域责任人",
+          "type": "text",
+          "required": true,
+          "ref": null,
+          "options": [],
+          "min": null,
+          "max": null
+        },
+        {
+          "key": "oxygenMin",
+          "label": "氧气下限 %",
+          "type": "number",
+          "required": true,
+          "ref": null,
+          "options": [],
+          "min": "0",
+          "max": "100"
+        },
+        {
+          "key": "oxygenMax",
+          "label": "氧气上限 %",
+          "type": "number",
+          "required": true,
+          "ref": null,
+          "options": [],
+          "min": "0",
+          "max": "100"
+        },
+        {
+          "key": "lelMax",
+          "label": "可燃气体禁止阈值 %LEL",
+          "type": "number",
+          "required": true,
+          "ref": null,
+          "options": [],
+          "min": "0",
+          "max": "100"
+        },
+        {
+          "key": "coMax",
+          "label": "CO 上限 ppm",
+          "type": "number",
+          "required": true,
+          "ref": null,
+          "options": [],
+          "min": "0",
+          "max": "10000"
+        },
+        {
+          "key": "h2sMax",
+          "label": "H2S 上限 ppm",
+          "type": "number",
+          "required": true,
+          "ref": null,
+          "options": [],
+          "min": "0",
+          "max": "10000"
+        }
+      ],
+      "actions": []
+    },
+    {
+      "key": "isolations",
+      "label": "隔离挂牌",
+      "description": "能源隔离记录；不能替代现场物理隔离",
+      "initial": "DRAFT",
+      "editable": true,
+      "creatable": true,
+      "fields": [
+        {
+          "key": "location",
+          "label": "区域",
+          "type": "ref",
+          "required": true,
+          "ref": "locations",
+          "options": [],
+          "min": null,
+          "max": null
+        },
+        {
+          "key": "equipment",
+          "label": "隔离设备",
+          "type": "text",
+          "required": true,
+          "ref": null,
+          "options": [],
+          "min": null,
+          "max": null
+        },
+        {
+          "key": "energy",
+          "label": "能源类型",
+          "type": "text",
+          "required": true,
+          "ref": null,
+          "options": [],
+          "min": null,
+          "max": null
+        },
+        {
+          "key": "lockNo",
+          "label": "挂牌锁具编号",
+          "type": "text",
+          "required": true,
+          "ref": null,
+          "options": [],
+          "min": null,
+          "max": null
+        }
+      ],
+      "actions": [
+        {
+          "key": "lock",
+          "label": "确认挂牌",
+          "from": [
+            "DRAFT"
+          ],
+          "to": "LOCKED",
+          "role": "REVIEWER",
+          "separate": true,
+          "fields": [
+            {
+              "key": "verification",
+              "label": "现场验证记录",
+              "type": "text",
+              "required": true,
+              "ref": null,
+              "options": [],
+              "min": null,
+              "max": null
+            }
+          ]
+        },
+        {
+          "key": "release",
+          "label": "确认解除",
+          "from": [
+            "LOCKED"
+          ],
+          "to": "RELEASED",
+          "role": "REVIEWER",
+          "separate": true,
+          "fields": [
+            {
+              "key": "verification",
+              "label": "解除检查记录",
+              "type": "text",
+              "required": true,
+              "ref": null,
+              "options": [],
+              "min": null,
+              "max": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "key": "permits",
+      "label": "作业许可证",
+      "description": "有效期、风险项、气体检测与作业放行",
+      "initial": "DRAFT",
+      "editable": true,
+      "creatable": true,
+      "fields": [
+        {
+          "key": "location",
+          "label": "区域",
+          "type": "ref",
+          "required": true,
+          "ref": "locations",
+          "options": [],
+          "min": null,
+          "max": null
+        },
+        {
+          "key": "isolation",
+          "label": "隔离单",
+          "type": "ref",
+          "required": true,
+          "ref": "isolations",
+          "options": [],
+          "min": null,
+          "max": null
+        },
+        {
+          "key": "type",
+          "label": "作业类型",
+          "type": "select",
+          "required": true,
+          "ref": null,
+          "options": [
+            "HOT_WORK",
+            "CONFINED_SPACE",
+            "MAINTENANCE"
+          ],
+          "min": null,
+          "max": null
+        },
+        {
+          "key": "start",
+          "label": "开工日期",
+          "type": "date",
+          "required": true,
+          "ref": null,
+          "options": [],
+          "min": null,
+          "max": null
+        },
+        {
+          "key": "end",
+          "label": "结束日期",
+          "type": "date",
+          "required": true,
+          "ref": null,
+          "options": [],
+          "min": null,
+          "max": null
+        },
+        {
+          "key": "team",
+          "label": "施工班组",
+          "type": "text",
+          "required": true,
+          "ref": null,
+          "options": [],
+          "min": null,
+          "max": null
+        },
+        {
+          "key": "scope",
+          "label": "作业内容",
+          "type": "text",
+          "required": true,
+          "ref": null,
+          "options": [],
+          "min": null,
+          "max": null
+        }
+      ],
+      "actions": [
+        {
+          "key": "submit",
+          "label": "送交审核",
+          "from": [
+            "DRAFT"
+          ],
+          "to": "REVIEW",
+          "role": "OPERATOR",
+          "separate": false,
+          "fields": []
+        },
+        {
+          "key": "approve",
+          "label": "审核放行",
+          "from": [
+            "REVIEW"
+          ],
+          "to": "APPROVED",
+          "role": "REVIEWER",
+          "separate": true,
+          "fields": []
+        },
+        {
+          "key": "reject",
+          "label": "退回补充",
+          "from": [
+            "REVIEW"
+          ],
+          "to": "DRAFT",
+          "role": "REVIEWER",
+          "separate": true,
+          "fields": []
+        },
+        {
+          "key": "start",
+          "label": "开工作业",
+          "from": [
+            "APPROVED"
+          ],
+          "to": "ACTIVE",
+          "role": "OPERATOR",
+          "separate": false,
+          "fields": []
+        },
+        {
+          "key": "suspend",
+          "label": "暂停作业",
+          "from": [
+            "ACTIVE"
+          ],
+          "to": "SUSPENDED",
+          "role": "OPERATOR",
+          "separate": false,
+          "fields": [
+            {
+              "key": "reason",
+              "label": "暂停原因",
+              "type": "text",
+              "required": true,
+              "ref": null,
+              "options": [],
+              "min": null,
+              "max": null
+            }
+          ]
+        },
+        {
+          "key": "resume",
+          "label": "复核恢复",
+          "from": [
+            "SUSPENDED"
+          ],
+          "to": "ACTIVE",
+          "role": "REVIEWER",
+          "separate": true,
+          "fields": []
+        },
+        {
+          "key": "close",
+          "label": "完工关闭",
+          "from": [
+            "ACTIVE",
+            "SUSPENDED"
+          ],
+          "to": "CLOSED",
+          "role": "REVIEWER",
+          "separate": true,
+          "fields": [
+            {
+              "key": "handover",
+              "label": "现场清理与交还记录",
+              "type": "text",
+              "required": true,
+              "ref": null,
+              "options": [],
+              "min": null,
+              "max": null
+            }
+          ]
+        },
+        {
+          "key": "cancel",
+          "label": "批准撤销申请",
+          "from": [
+            "DRAFT",
+            "REVIEW",
+            "APPROVED"
+          ],
+          "to": "CANCELLED",
+          "fields": [
+            {
+              "key": "reason",
+              "label": "撤销依据",
+              "type": "text",
+              "required": true,
+              "ref": null,
+              "options": [],
+              "min": null,
+              "max": null
+            }
+          ],
+          "role": "REVIEWER",
+          "separate": true
+        }
+      ]
+    },
+    {
+      "key": "hazards",
+      "label": "风险控制项",
+      "description": "逐项识别风险并由安全审核人验证",
+      "initial": "DRAFT",
+      "editable": true,
+      "creatable": true,
+      "fields": [
+        {
+          "key": "permit",
+          "label": "许可证",
+          "type": "ref",
+          "required": true,
+          "ref": "permits",
+          "options": [],
+          "min": null,
+          "max": null
+        },
+        {
+          "key": "hazard",
+          "label": "危险因素",
+          "type": "text",
+          "required": true,
+          "ref": null,
+          "options": [],
+          "min": null,
+          "max": null
+        },
+        {
+          "key": "control",
+          "label": "控制措施",
+          "type": "text",
+          "required": true,
+          "ref": null,
+          "options": [],
+          "min": null,
+          "max": null
+        },
+        {
+          "key": "responsible",
+          "label": "责任人",
+          "type": "text",
+          "required": true,
+          "ref": null,
+          "options": [],
+          "min": null,
+          "max": null
+        }
+      ],
+      "actions": [
+        {
+          "key": "verify",
+          "label": "验证措施",
+          "from": [
+            "DRAFT"
+          ],
+          "to": "VERIFIED",
+          "role": "REVIEWER",
+          "separate": true,
+          "fields": [
+            {
+              "key": "evidence",
+              "label": "现场验证依据",
+              "type": "text",
+              "required": true,
+              "ref": null,
+              "options": [],
+              "min": null,
+              "max": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "key": "readings",
+      "label": "气体检测",
+      "description": "记录氧气、可燃气体、一氧化碳、硫化氢浓度",
+      "initial": "RECORDED",
+      "editable": false,
+      "creatable": true,
+      "fields": [
+        {
+          "key": "permit",
+          "label": "许可证",
+          "type": "ref",
+          "required": true,
+          "ref": "permits",
+          "options": [],
+          "min": null,
+          "max": null
+        },
+        {
+          "key": "testedAt",
+          "label": "检测日期",
+          "type": "date",
+          "required": true,
+          "ref": null,
+          "options": [],
+          "min": null,
+          "max": null
+        },
+        {
+          "key": "oxygen",
+          "label": "氧气体积 %",
+          "type": "number",
+          "required": true,
+          "ref": null,
+          "options": [],
+          "min": "0",
+          "max": "100"
+        },
+        {
+          "key": "lel",
+          "label": "可燃气体 %LEL",
+          "type": "number",
+          "required": true,
+          "ref": null,
+          "options": [],
+          "min": "0",
+          "max": "100"
+        },
+        {
+          "key": "co",
+          "label": "CO ppm",
+          "type": "number",
+          "required": true,
+          "ref": null,
+          "options": [],
+          "min": "0",
+          "max": "10000"
+        },
+        {
+          "key": "h2s",
+          "label": "H2S ppm",
+          "type": "number",
+          "required": true,
+          "ref": null,
+          "options": [],
+          "min": "0",
+          "max": "10000"
+        },
+        {
+          "key": "tester",
+          "label": "检测人",
+          "type": "text",
+          "required": true,
+          "ref": null,
+          "options": [],
+          "min": null,
+          "max": null
+        }
+      ],
+      "actions": []
+    }
+  ]
+}
