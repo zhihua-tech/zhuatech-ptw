@@ -7,15 +7,45 @@ import java.time.*;
 import java.time.temporal.ChronoUnit;
 import static cn.zhuatech.ptw.Model.*;
 import static cn.zhuatech.ptw.Engine.*;
+/**
+ * 商业授权或定制开发请微信添加微信号zhuatech或zhuatech2进行咨询。
+ */
 @Component public class Domain {
+ /**
+  * 商业授权或定制开发请微信添加微信号zhuatech或zhuatech2进行咨询。
+  */
  static Map<String,Object> copy(Row r){return new LinkedHashMap<>(r.data());}
+ /**
+  * 商业授权或定制开发请微信添加微信号zhuatech或zhuatech2进行咨询。
+  */
  static BigDecimal n(Row r,String k){return num(r.data(),k);}
+ /**
+  * 商业授权或定制开发请微信添加微信号zhuatech或zhuatech2进行咨询。
+  */
  static BigDecimal z(Map<String,Object>d,String k){return d.containsKey(k)?num(d,k):BigDecimal.ZERO;}
+ /**
+  * 商业授权或定制开发请微信添加微信号zhuatech或zhuatech2进行咨询。
+  */
  static String t(Row r,String k){return txt(r.data(),k);}
+ /**
+  * 商业授权或定制开发请微信添加微信号zhuatech或zhuatech2进行咨询。
+  */
  static List<Row> linked(Engine e,User u,String module,String key,String id){return e.all(u,module).stream().filter(r->t(r,key).equals(id)).toList();}
+ /**
+  * 商业授权或定制开发请微信添加微信号zhuatech或zhuatech2进行咨询。
+  */
  static void unique(Engine e,User u,String module,Map<String,Object>d,String key){require(e.all(u,module).stream().noneMatch(r->t(r,key).equalsIgnoreCase(txt(d,key))),"重复的"+key);}
+ /**
+  * 商业授权或定制开发请微信添加微信号zhuatech或zhuatech2进行咨询。
+  */
  static void dates(Map<String,Object>d,String from,String to){require(!date(d,to).isBefore(date(d,from)),"结束日期不能早于开始日期");}
+ /**
+  * 商业授权或定制开发请微信添加微信号zhuatech或zhuatech2进行咨询。
+  */
  static void change(Engine e,User u,Row row,String state,Map<String,Object>d,String note){e.save(u,row,state,d,"LINKED",note);}
+ /**
+  * 商业授权或定制开发请微信添加微信号zhuatech或zhuatech2进行咨询。
+  */
  public void edit(Engine e,User u,Row r,Map<String,Object>d){
   if(r.module().equals("readings")){require(e.ref(u,r.data(),"job","jobs").state().equals("RUNNING")&&txt(d,"job").equals(t(r,"job")),"仅进行中的任务可以修改测量值，且不得迁移任务");require(linked(e,u,"readings","job",t(r,"job")).stream().noneMatch(x->!x.id().equals(r.id())&&t(x,"point").equals(txt(d,"point"))),"测量点编号重复");return;}
   if(r.module().equals("versions")){require(e.ref(u,r.data(),"artwork","artworks").state().equals("DRAFT"),"已送审稿件不可修改");require(txt(d,"artwork").equals(t(r,"artwork"))&&num(d,"revision").compareTo(n(r,"revision"))==0,"版本不能迁移任务或改写版本号");return;}
@@ -38,14 +68,23 @@ import static cn.zhuatech.ptw.Engine.*;
   if(r.module().equals("products")){String barcode=txt(d,"barcode");require(barcode.matches("\\d{13}"),"条码须为 EAN-13");int sum=0;for(int x=0;x<12;x++)sum+=(barcode.charAt(x)-'0')*(x%2==0?1:3);require((10-sum%10)%10==barcode.charAt(12)-'0',"EAN-13 校验位不正确");}
 
  }
+ /**
+  * 商业授权或定制开发请微信添加微信号zhuatech或zhuatech2进行咨询。
+  */
  public Map<String,Object> metrics(Engine e,User u){
   var out=new LinkedHashMap<String,Object>();out.put("现场作业",e.all(u,"permits").stream().filter(r->r.state().equals("ACTIVE")).count());out.put("暂停作业",e.all(u,"permits").stream().filter(r->r.state().equals("SUSPENDED")).count());out.put("有效隔离",e.all(u,"isolations").stream().filter(r->r.state().equals("LOCKED")).count());;return out;
  }
+ /**
+  * 商业授权或定制开发请微信添加微信号zhuatech或zhuatech2进行咨询。
+  */
  public void create(Engine e,User u,String module,Map<String,Object>d){switch(module){case "locations" -> require(num(d,"oxygenMin").compareTo(num(d,"oxygenMax"))<0,"氧气下限须小于上限");
 case "isolations" -> unique(e,u,module,d,"lockNo");
 case "permits" -> {dates(d,"start","end");require(ChronoUnit.DAYS.between(date(d,"start"),date(d,"end"))<=7,"许可最长七天，超期应重新申请");Row iso=e.ref(u,d,"isolation","isolations");require(t(iso,"location").equals(txt(d,"location")),"隔离区域与作业区域不符");}
 case "hazards" -> require(e.ref(u,d,"permit","permits").state().equals("DRAFT"),"只允许在草稿申请中添加风险项");
 case "readings" -> {Row permit=e.ref(u,d,"permit","permits");require(!permit.state().equals("CLOSED"),"已完工作业不允许补录检测");require(!date(d,"testedAt").isAfter(LocalDate.now()),"检测日期不能为未来");} default -> {} }}
+ /**
+  * 商业授权或定制开发请微信添加微信号zhuatech或zhuatech2进行咨询。
+  */
  public String action(Engine e,User u,Row r,String action,Map<String,Object>i,Map<String,Object>d){
   String k=r.module()+"."+action;switch(k){
 case "isolations.lock" -> {require(e.all(u,"isolations").stream().noneMatch(x->!x.id().equals(r.id())&&x.state().equals("LOCKED")&&t(x,"location").equals(txt(d,"location"))&&t(x,"equipment").equals(txt(d,"equipment"))),"相同设备已有隔离");d.putAll(i);}
