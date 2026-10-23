@@ -1,0 +1,53 @@
+[
+  {
+    "patch": {},
+    "expected": {
+      "decision": "PASS",
+      "daysLeft": "#9",
+      "missingWorkers": "#0"
+    },
+    "error": false
+  },
+  {
+    "patch": {
+      "expires": "2026-10-22"
+    },
+    "expected": {
+      "decision": "HOLD"
+    },
+    "error": false
+  },
+  {
+    "patch": {
+      "workers": "2"
+    },
+    "expected": {
+      "decision": "HOLD",
+      "missingWorkers": "#1"
+    },
+    "error": false
+  },
+  {
+    "patch": {
+      "checksDone": "NO"
+    },
+    "expected": {
+      "decision": "HOLD"
+    },
+    "error": false
+  },
+  {
+    "patch": {
+      "approved": "2026-10-24"
+    },
+    "expected": {},
+    "error": true
+  },
+  {
+    "patch": {
+      "expires": "2026-10-19"
+    },
+    "expected": {},
+    "error": true
+  }
+]
